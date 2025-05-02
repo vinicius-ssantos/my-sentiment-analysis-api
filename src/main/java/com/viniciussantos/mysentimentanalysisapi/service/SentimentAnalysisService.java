@@ -1,7 +1,8 @@
-package com.example.sentiment.service;
+package com.viniciussantos.mysentimentanalysisapi.service;
 
-import com.example.sentiment.client.HuggingFaceClient;
-import com.example.sentiment.model.SentimentResponse;
+
+import com.viniciussantos.mysentimentanalysisapi.client.HuggingFaceClient;
+import com.viniciussantos.mysentimentanalysisapi.model.SentimentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

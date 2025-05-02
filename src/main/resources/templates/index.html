@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Análise de Sentimento</title>
+</head>
+<body>
+<h1>🔍 Análise de Sentimento</h1>
+<form method="post" action="/analyze" th:action="@{/analyze}" th:object="${commentRequest}">
+    <textarea name="comment" rows="4" cols="50" placeholder="Digite seu comentário aqui..." required></textarea><br/>
+    <button type="submit">Analisar</button>
+</form>
+
+
+<div th:if="${result}">
+    <h2>Resultado</h2>
+    <p><strong>Comentário:</strong> <span th:text="${comment}"></span></p>
+    <p><strong>Sentimento:</strong> <span th:text="${result.sentiment}"></span></p>
+    <p><strong>Score:</strong> <span th:text="${result.score}"></span></p>
+    <p><strong>Label dominante:</strong> <span th:text="${result.dominantLabel}"></span></p>
+</div>
+
+<div th:if="${error}">
+    <p style="color:red"><strong th:text="${error}"></strong></p>
+</div>
+
+</body>
+</html>

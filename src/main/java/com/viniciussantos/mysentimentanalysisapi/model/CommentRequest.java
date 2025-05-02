@@ -1,4 +1,4 @@
-package com.example.sentiment.model;
+package com.viniciussantos.mysentimentanalysisapi.model;
 
 public class CommentRequest {
     private String comment;

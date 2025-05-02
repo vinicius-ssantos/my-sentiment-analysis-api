@@ -16,23 +16,52 @@ public class HuggingFaceClient {
 
     private final WebClient webClient = WebClient.create("https://api-inference.huggingface.co");
 
-    public Mono<String> analyzeSentiment(String text) {
+    public Mono<SentimentResult> analyzeSentiment(String text) {
         String model = "nlptown/bert-base-multilingual-uncased-sentiment";
 
         return webClient.post()
-            .uri("/models/" + model)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiToken)
-            .bodyValue(Map.of("inputs", text))
-            .retrieve()
-            .bodyToMono(List.class)
-            .map(this::parseSentiment);
+                .uri("/models/" + model)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiToken)
+                .bodyValue(Map.of("inputs", text))
+                .retrieve()
+                .bodyToMono(List.class)
+                .map(this::parseSentimentResult);
     }
 
-    private String parseSentiment(List<?> response) {
-        if (response == null || response.isEmpty()) return "Desconhecido";
+    private SentimentResult parseSentimentResult(List<?> response) {
+        if (response == null || response.isEmpty()) return new SentimentResult("Desconhecido", 0.0, "n/a");
 
-        Map<String, Object> first = (Map<String, Object>) ((List<?>) response.get(0)).get(0);
-        String label = (String) first.get("label");
-        return label;
+        List<?> scores = (List<?>) response.get(0);
+        String dominantLabel = "";
+        double maxScore = -1;
+
+        double score5 = 0, score4 = 0, score3 = 0, score2 = 0, score1 = 0;
+        for (Object obj : scores) {
+            Map<String, Object> map = (Map<String, Object>) obj;
+            String label = (String) map.get("label");
+            double score = ((Number) map.get("score")).doubleValue();
+
+            if (score > maxScore) {
+                maxScore = score;
+                dominantLabel = label;
+            }
+
+            switch (label) {
+                case "5 stars" -> score5 = score;
+                case "4 stars" -> score4 = score;
+                case "3 stars" -> score3 = score;
+                case "2 stars" -> score2 = score;
+                case "1 star"  -> score1 = score;
+            }
+        }
+
+        String sentiment;
+        if ((score5 + score4) > 0.6) sentiment = "Positivo";
+        else if ((score1 + score2) > 0.5) sentiment = "Negativo";
+        else sentiment = "Neutro";
+
+        return new SentimentResult(sentiment, maxScore, dominantLabel);
     }
+
+    public record SentimentResult(String sentiment, double score, String dominantLabel) {}
 }

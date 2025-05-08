@@ -1,29 +1,40 @@
 package com.viniciussantos.mysentimentanalysisapi.model;
 
 /**
- * SentimentResponse is a model class that represents the response from the sentiment analysis API.
- * It contains the sentiment, score, and dominant label of the analyzed text.
+ * Represents the response from the sentiment analysis API.
+ * Implemented as a record for immutability and conciseness.
+ *
+ * @param sentiment The overall sentiment classification (Positive, Negative, Neutral)
+ * @param score The confidence score of the sentiment analysis
+ * @param dominantLabel The most likely sentiment label from the model
  */
-
-public class SentimentResponse {
-    private String sentiment;
-    private double score;
-    private String dominantLabel;
-
-    public SentimentResponse(String sentiment, double score, String dominantLabel) {
-        this.sentiment = sentiment;
-        this.score = score;
-        this.dominantLabel = dominantLabel;
-    }
-
+public record SentimentResponse(String sentiment, double score, String dominantLabel) {
+    /**
+     * Returns the sentiment classification.
+     * This method is provided for compatibility with frameworks expecting JavaBean conventions.
+     *
+     * @return the sentiment classification
+     */
     public String getSentiment() {
         return sentiment;
     }
 
+    /**
+     * Returns the confidence score.
+     * This method is provided for compatibility with frameworks expecting JavaBean conventions.
+     *
+     * @return the confidence score
+     */
     public double getScore() {
         return score;
     }
 
+    /**
+     * Returns the dominant label from the model.
+     * This method is provided for compatibility with frameworks expecting JavaBean conventions.
+     *
+     * @return the dominant label
+     */
     public String getDominantLabel() {
         return dominantLabel;
     }
